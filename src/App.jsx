@@ -124,10 +124,10 @@ const isRecent = (video) => {
 const fetchVamsidhariVideosSafely = async () => {
   try {
     // 1. Trigger background Sync (Auto-Update Latest Logic)
-    fetch("http://localhost:5000/api/sync_latest", { method: "POST" }).catch(e => console.log('Sync err:', e));
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/sync_latest`, { method: "POST" }).catch(e => console.log('Sync err:', e));
 
     // 2. Fetch Latest 20 from our SQLite Database!
-    const res = await fetch("http://localhost:5000/api/videos/latest?limit=20");
+    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/videos/latest?limit=20`);
     if (!res.ok) throw new Error("DB Offline");
     const data = await res.json();
 
@@ -406,7 +406,7 @@ const MainDashboard = ({ videos, isLoggedIn, setIsLoggedIn, showLogin, setShowLo
   const [toast, setToast] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/quote/daily").then(r => r.json()).then(q => setTodayQuote(q)).catch(e => console.log(e));
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/quote/daily`).then(r => r.json()).then(q => setTodayQuote(q)).catch(e => console.log(e));
   }, []);
 
   useEffect(() => {
@@ -684,7 +684,7 @@ const ExplorePage = ({ openRouterKey }) => {
   const fetchPage = async (p) => {
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:5000/api/videos?page=${p}&limit=100`);
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/videos?page=${p}&limit=100`);
       const data = await res.json();
       const mapped = data.data.map(v => ({
         id: v.videoId,
@@ -813,7 +813,7 @@ const VideoPlayer = ({ videos, openRouterKey }) => {
   useEffect(() => {
     if (!video?.id) return;
     setStructuredData(null);
-    fetch(`http://localhost:5000/api/videos/${video.id}/structured`)
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/videos/${video.id}/structured`)
       .then(r => r.json()).then(d => { if (d && !d.error) setStructuredData(d); }).catch(() => { });
   }, [video?.id]);
 
@@ -980,7 +980,7 @@ const AdminPage = () => {
           <textarea placeholder="Provide an explanation for the youth..." className="auth-input" style={{ marginBottom: 16, minHeight: 100, resize: 'vertical' }} onChange={(e) => setTodayQuote({ ...todayQuote, explanation: e.target.value })} />
           <button className="btn-primary" style={{ marginTop: 12, width: '100%' }} onClick={() => {
             if (!todayQuote.text) return alert("Quote cannot be empty.");
-            fetch("http://localhost:5000/api/quote/daily", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(todayQuote) })
+            fetch(`${import.meta.env.VITE_API_BASE_URL}/api/quote/daily`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(todayQuote) })
               .then(() => alert("Daily wisdom successfully updated globally! All devices will reflect this change."));
           }}>Push Update to All Users</button>
         </div>
@@ -1005,7 +1005,7 @@ const AdminPage = () => {
 
           <button className="btn-primary" style={{ background: '#9333ea', marginTop: 12, width: '100%' }} onClick={() => {
             if (!newEvent.title || !newEvent.startTime) return alert("Title and Start Time required.");
-            fetch("http://localhost:5000/api/events", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(newEvent) })
+            fetch(`${import.meta.env.VITE_API_BASE_URL}/api/events`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(newEvent) })
               .then(() => alert("Event scheduled securely to database."));
           }}>Publish Event Instantly</button>
         </div>
@@ -1030,10 +1030,10 @@ const EventsPage = () => {
   };
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/events").then(r => r.json()).then(data => {
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/events`).then(r => r.json()).then(data => {
       setEvents(data);
       data.forEach(e => {
-        fetch(`http://localhost:5000/api/events/${e.id}/comments`).then(r => r.json()).then(c => {
+        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/events/${e.id}/comments`).then(r => r.json()).then(c => {
           setComments(prev => ({ ...prev, [e.id]: c }));
         });
       });
@@ -1046,12 +1046,12 @@ const EventsPage = () => {
     const text = commentInputs[eventId];
     if (!text) return;
 
-    fetch(`http://localhost:5000/api/events/${eventId}/comments`, {
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/events/${eventId}/comments`, {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ user: uName, text })
     }).then(() => {
       setCommentInputs(prev => ({ ...prev, [eventId]: "" }));
-      fetch(`http://localhost:5000/api/events/${eventId}/comments`).then(r => r.json()).then(c => {
+      fetch(`${import.meta.env.VITE_API_BASE_URL}/api/events/${eventId}/comments`).then(r => r.json()).then(c => {
         setComments(prev => ({ ...prev, [eventId]: c }));
       });
     });
