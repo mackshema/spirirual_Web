@@ -221,7 +221,7 @@ const AuthModal = ({ onClose, onSuccess }) => {
       if (window.google && googleButtonRef.current) {
         window.google.accounts.id.initialize({
           // Make sure we pull the raw env if they haven't explicitly prefixed VITE_ yet
-          client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID || "270196791260-b2au9kguf9aopf093no9pane7cgkmpc3.apps.googleusercontent.com",
+          client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
           callback: handleCredentialResponse
         });
         window.google.accounts.id.renderButton(

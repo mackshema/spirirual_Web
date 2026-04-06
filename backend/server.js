@@ -81,7 +81,7 @@ db.run(`ALTER TABLE videos ADD COLUMN llmStructured TEXT`, (err) => {
 
 const API_KEY = process.env.YOUTUBE_API_KEY || "";
 const OPENROUTER_API_KEY = process.env.VITE_OPENROUTER_KEY || process.env.OPENROUTER_API_KEY || "";
-const CHANNEL_ID = "UCDGxL0Q44R22OL3dIRnrlkw";
+const CHANNEL_ID = process.env.YOUTUBE_CHANNEL_ID || "UCDGxL0Q44R22OL3dIRnrlkw";
 
 // STRICT CATEGORIZATION LOGIC
 const categorizeVideo = (title) => {
