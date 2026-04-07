@@ -303,5 +303,16 @@ app.post('/api/events/:id/comments', (req, res) => {
         });
 });
 
+app.get('/', (req, res) => {
+  res.send('🚀 Spiritual AI Backend is Running!');
+});
+
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => { console.log(`🚀 Advanced AI Backend running at http://localhost:${PORT}`); });
+
+app.listen(PORT, () => {
+  console.log(
+    process.env.RENDER
+      ? `🚀 Live at https://spirirual-web.onrender.com`
+      : `🚀 Local: http://localhost:${PORT}`
+  );
+});
